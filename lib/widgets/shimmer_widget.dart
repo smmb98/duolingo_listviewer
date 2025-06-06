@@ -1,29 +1,20 @@
 import 'package:flutter/material.dart';
-import '../models/section_model.dart';
-import 'jelly_button.dart';
+import 'package:shimmer/shimmer.dart';
 
-class SectionWidget extends StatelessWidget {
-  final SectionModel section;
+class ShimmerSectionWidget extends StatelessWidget {
   final int sectionIndex;
 
-  const SectionWidget({
-    super.key,
-    required this.section,
-    required this.sectionIndex,
-  });
+  const ShimmerSectionWidget({super.key, required this.sectionIndex});
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> buttons = [];
-
     final offsets = [0.0, 20.0, 30.0, 20.0, 0.0, -20.0, -30.0, -20.0];
-
     final reverseOffsets = offsets.map((offset) => -offset).toList();
-
     final adjustedOffsets = (sectionIndex % 2 == 1) ? reverseOffsets : offsets;
 
-    for (int i = 0; i < section.buttonCount; i++) {
-      double offset = (i == 0 || i == section.buttonCount - 1)
+    for (int i = 0; i < 8; i++) {
+      double offset = (i == 0 || i == 7)
           ? 0
           : adjustedOffsets[i % adjustedOffsets.length];
       buttons.add(
@@ -35,7 +26,18 @@ class SectionWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: Align(
               alignment: Alignment(offset / 100, 0),
-              child: JellyButton(label: 'Item ${i + 1}', color: section.color),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[800]!,
+                highlightColor: Colors.grey[700]!,
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -47,27 +49,27 @@ class SectionWidget extends StatelessWidget {
         border: Border.all(color: Colors.red, width: 1),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0.0),
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
         child: Column(
           children: [
             Container(
               decoration: BoxDecoration(
-                color: section.color,
                 border: Border.all(color: Colors.green, width: 1),
               ),
-              height: 180.0,
-              width: double.maxFinite,
-              alignment: Alignment.center,
-              child: Text(
-                section.title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[800]!,
+                highlightColor: Colors.grey[700]!,
+                child: Container(
+                  width: 200,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
               ),
             ),
-            // const SizedBox(height: 20),
+            const SizedBox(height: 20),
             ...buttons,
           ],
         ),

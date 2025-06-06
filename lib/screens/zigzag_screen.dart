@@ -1,3 +1,4 @@
+import 'package:duolingo_listviewer/widgets/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import '../providers/section_loader.dart';
 import '../widgets/section_widget.dart';
@@ -64,13 +65,17 @@ class _ZigZagScreenState extends State<ZigZagScreen> {
         builder: (context, _) {
           return ListView.builder(
             controller: controller,
-            itemCount: loader.sections.length + 1,
+            itemCount: loader.sections.length + (loader.hasMore ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == loader.sections.length) {
                 return loader.hasMore
-                    ? const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Center(child: CircularProgressIndicator()),
+                    ? Column(
+                        children: List.generate(
+                          1,
+                          (i) => ShimmerSectionWidget(
+                            sectionIndex: loader.sections.length + i,
+                          ),
+                        ),
                       )
                     : const SizedBox.shrink();
               }
