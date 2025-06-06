@@ -26,20 +26,63 @@ class SectionWidget extends StatelessWidget {
       double offset = (i == 0 || i == section.buttonCount - 1)
           ? 0
           : adjustedOffsets[i % adjustedOffsets.length];
-      buttons.add(
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.blue, width: 1),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: Align(
-              alignment: Alignment(offset / 100, 0),
-              child: JellyButton(label: 'Item ${i + 1}', color: section.color),
-            ),
+
+      bool isMaxOffset = offset.abs() == 30.0;
+
+      Widget buttonContent = Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.blue, width: 1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          child: Align(
+            alignment: Alignment(offset / 100, 0),
+            child: JellyButton(label: 'Item ${i + 1}', color: section.color),
           ),
         ),
       );
+
+      if (isMaxOffset) {
+        buttonContent = Stack(
+          clipBehavior: Clip.none,
+          children: [
+            buttonContent,
+            Positioned(
+              top: -40,
+              bottom: -40,
+              right: offset > 0 ? -60 : null,
+              left: offset < 0 ? -60 : null,
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Colors.amber[700],
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.amber[700]!.withOpacity(0.5),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Text(
+                    'BONUS',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      }
+
+      buttons.add(buttonContent);
     }
 
     return Container(
@@ -60,7 +103,7 @@ class SectionWidget extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 section.title,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
