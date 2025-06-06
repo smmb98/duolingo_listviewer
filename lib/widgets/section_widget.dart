@@ -50,11 +50,11 @@ class SectionWidget extends StatelessWidget {
             Positioned(
               top: -40,
               bottom: -40,
-              right: offset > 0 ? -60 : null,
-              left: offset < 0 ? -60 : null,
+              right: offset < 0 ? 70 : null,
+              left: offset > 0 ? 70 : null,
               child: Container(
-                width: 80,
-                height: 80,
+                width: 200,
+                height: 200,
                 decoration: BoxDecoration(
                   color: Colors.amber[700],
                   borderRadius: BorderRadius.circular(8),
