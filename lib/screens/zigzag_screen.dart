@@ -12,6 +12,7 @@ class ZigZagScreen extends StatefulWidget {
 class _ZigZagScreenState extends State<ZigZagScreen> {
   final SectionLoader loader = SectionLoader();
   final ScrollController controller = ScrollController();
+  bool showBackToTop = false;
 
   @override
   void initState() {
@@ -21,6 +22,13 @@ class _ZigZagScreenState extends State<ZigZagScreen> {
   }
 
   void _onScroll() {
+    // Show back-to-top button logic
+    final shouldShow = controller.offset > MediaQuery.of(context).size.height;
+    if (shouldShow != showBackToTop) {
+      setState(() => showBackToTop = shouldShow);
+    }
+
+    // Lazy loading logic
     if (controller.position.pixels >=
             controller.position.maxScrollExtent - 800 &&
         !loader.isLoading) {
@@ -38,6 +46,19 @@ class _ZigZagScreenState extends State<ZigZagScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      // appBar: AppBar(title: const Text("Zig-Zag Viewer")),
+      floatingActionButton: showBackToTop
+          ? FloatingActionButton(
+              onPressed: () {
+                controller.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                );
+              },
+              child: const Icon(Icons.arrow_upward),
+            )
+          : null,
       body: AnimatedBuilder(
         animation: loader,
         builder: (context, _) {
@@ -53,7 +74,10 @@ class _ZigZagScreenState extends State<ZigZagScreen> {
                       )
                     : const SizedBox.shrink();
               }
-              return SectionWidget(section: loader.sections[index]);
+              return SectionWidget(
+                section: loader.sections[index],
+                sectionIndex: index,
+              );
             },
           );
         },
