@@ -1,3 +1,4 @@
+import 'package:duolingo_listviewer/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'screens/zigzag_screen.dart';
 
@@ -8,6 +9,8 @@ class ZigZagApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
+
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: ZigZagScreen(),

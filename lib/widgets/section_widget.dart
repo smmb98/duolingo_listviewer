@@ -1,3 +1,4 @@
+import 'package:duolingo_listviewer/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import '../models/section_model.dart';
 import 'jelly_button.dart';
@@ -16,27 +17,27 @@ class SectionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Widget> buttons = [];
 
-    final offsets = [0.0, 20.0, 30.0, 20.0, 0.0, -20.0, -30.0, -20.0];
-
+    // final offsets = [0.0, 20.0, 30.0, 20.0, 0.0, -20.0, -30.0, -20.0];
+    final offsets = [0.0, 25.0, 40.0, 25.0, 0.0, -25.0, -40.0, -25.0];
+    // final offsets = [0.0, 5.0, 8.0, 5.0, 0.0, -5.0, -8.0, -5.0]; // percentage
     final reverseOffsets = offsets.map((offset) => -offset).toList();
-
     final adjustedOffsets = (sectionIndex % 2 == 1) ? reverseOffsets : offsets;
 
     for (int i = 0; i < section.buttonCount; i++) {
-      double offset = (i == 0 || i == section.buttonCount - 1)
+      double offsetPercent = (i == 0 || i == section.buttonCount - 1)
           ? 0
           : adjustedOffsets[i % adjustedOffsets.length];
 
-      bool isMaxOffset = offset.abs() == 30.0;
+      bool isMaxOffset = offsetPercent.abs() == 40.0;
 
       Widget buttonContent = Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.blue, width: 1),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          padding: EdgeInsets.symmetric(vertical: SizeConfig.hp(2)),
           child: Align(
-            alignment: Alignment(offset / 100, 0),
+            alignment: Alignment(offsetPercent / 100, 0),
             child: JellyButton(label: 'Item ${i + 1}', color: section.color),
           ),
         ),
@@ -45,34 +46,49 @@ class SectionWidget extends StatelessWidget {
       if (isMaxOffset) {
         buttonContent = Stack(
           clipBehavior: Clip.none,
+          alignment: Alignment.center,
           children: [
             buttonContent,
             Positioned(
-              top: -40,
-              bottom: -40,
-              right: offset < 0 ? 70 : null,
-              left: offset > 0 ? 70 : null,
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  color: Colors.amber[700],
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.amber[700]!.withOpacity(0.5),
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Text(
-                    'BONUS',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+              top: null,
+              bottom: null,
+              left: offsetPercent < 0
+                  ? null
+                  : SizeConfig.wp(13), // Opposite side
+              right: offsetPercent > 0 ? null : SizeConfig.wp(13),
+
+              child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: SizeConfig.wp(
+                    MediaQuery.of(context).orientation == Orientation.landscape
+                        ? 20
+                        : 28,
+                  ),
+                  height: SizeConfig.wp(
+                    MediaQuery.of(context).orientation == Orientation.landscape
+                        ? 20
+                        : 28,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.amber[700],
+                    borderRadius: BorderRadius.circular(SizeConfig.wp(2)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.amber[700]!.withOpacity(0.4),
+                        blurRadius: SizeConfig.wp(4),
+                        spreadRadius: SizeConfig.wp(1),
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'BONUS',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -90,7 +106,7 @@ class SectionWidget extends StatelessWidget {
         border: Border.all(color: Colors.red, width: 1),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0.0),
+        padding: EdgeInsets.symmetric(vertical: 0.0),
         child: Column(
           children: [
             Container(
@@ -98,19 +114,22 @@ class SectionWidget extends StatelessWidget {
                 color: section.color,
                 border: Border.all(color: Colors.green, width: 1),
               ),
-              height: 180.0,
-              width: double.maxFinite,
+              height:
+                  MediaQuery.of(context).orientation == Orientation.landscape
+                  ? SizeConfig.hp(20)
+                  : SizeConfig.hp(10),
+              width: double.infinity,
+
               alignment: Alignment.center,
               child: Text(
                 section.title,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: SizeConfig.sp(5.3),
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            // const SizedBox(height: 20),
             ...buttons,
           ],
         ),
