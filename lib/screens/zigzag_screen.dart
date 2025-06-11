@@ -2,6 +2,9 @@ import 'package:duolingo_listviewer/widgets/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import '../providers/section_loader.dart';
 import '../widgets/section_widget.dart';
+import '../utils/responsive.dart';
+import '../widgets/section_header.dart';
+import '../widgets/section_header_delegate.dart';
 
 class ZigZagScreen extends StatefulWidget {
   const ZigZagScreen({super.key});
@@ -45,6 +48,10 @@ class _ZigZagScreenState extends State<ZigZagScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    final headerHeight = isLandscape ? SizeConfig.hp(20) : SizeConfig.hp(10);
+
     return Scaffold(
       backgroundColor: Colors.black,
       // appBar: AppBar(title: const Text("Zig-Zag Viewer")),
@@ -63,27 +70,41 @@ class _ZigZagScreenState extends State<ZigZagScreen> {
       body: AnimatedBuilder(
         animation: loader,
         builder: (context, _) {
-          return ListView.builder(
+          return CustomScrollView(
             controller: controller,
-            itemCount: loader.sections.length + (loader.hasMore ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index == loader.sections.length) {
-                return loader.hasMore
-                    ? Column(
-                        children: List.generate(
-                          1,
-                          (i) => ShimmerSectionWidget(
-                            sectionIndex: loader.sections.length + i,
-                          ),
+            slivers: [
+              ...loader.sections.asMap().entries.map((entry) {
+                final index = entry.key;
+                final section = entry.value;
+                return SliverMainAxisGroup(
+                  slivers: [
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: SectionHeaderDelegate(
+                        minHeight: headerHeight,
+                        maxHeight: headerHeight,
+                        child: SectionHeader(
+                          section: section,
+                          isLandscape: isLandscape,
                         ),
-                      )
-                    : const SizedBox.shrink();
-              }
-              return SectionWidget(
-                section: loader.sections[index],
-                sectionIndex: index,
-              );
-            },
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: SectionWidget(
+                        section: section,
+                        sectionIndex: index,
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
+              if (loader.hasMore)
+                SliverToBoxAdapter(
+                  child: ShimmerSectionWidget(
+                    sectionIndex: loader.sections.length,
+                  ),
+                ),
+            ],
           );
         },
       ),

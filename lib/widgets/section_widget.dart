@@ -56,7 +56,6 @@ class SectionWidget extends StatelessWidget {
                   ? null
                   : SizeConfig.wp(13), // Opposite side
               right: offsetPercent > 0 ? null : SizeConfig.wp(13),
-
               child: Align(
                 alignment: Alignment.center,
                 child: Container(
@@ -107,32 +106,7 @@ class SectionWidget extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 0.0),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: section.color,
-                border: Border.all(color: Colors.green, width: 1),
-              ),
-              height:
-                  MediaQuery.of(context).orientation == Orientation.landscape
-                  ? SizeConfig.hp(20)
-                  : SizeConfig.hp(10),
-              width: double.infinity,
-
-              alignment: Alignment.center,
-              child: Text(
-                section.title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: SizeConfig.sp(5.3),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            ...buttons,
-          ],
-        ),
+        child: Column(children: buttons),
       ),
     );
   }
