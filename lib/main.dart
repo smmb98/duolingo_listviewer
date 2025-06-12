@@ -7,6 +7,7 @@ void main() => runApp(const ZigZagApp());
 class ZigZagApp extends StatelessWidget {
   const ZigZagApp({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
